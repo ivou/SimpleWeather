@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ivoanic.simpleweather.MainActivity"
+    android:background="@color/colorNeznam">
+
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:id="@+id/button"
+        android:text="Refresh"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/lastupdated"
+        android:layout_alignEnd="@+id/lastupdated"
+        android:layout_marginBottom="23dp" />
+
+    <TextView
+        android:id="@+id/conditions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="conditions"
+        android:layout_below="@+id/temp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/lastupdated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="lastupdated"
+        tools:layout_editor_absoluteX="154dp"
+        tools:layout_editor_absoluteY="247dp"
+        android:layout_below="@+id/location"
+        android:layout_alignRight="@+id/location"
+        android:layout_alignEnd="@+id/location" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:id="@+id/linear"
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="temp"
+        android:textSize="50dp"
+        android:textColor="@color/colorAccent"
+        android:layout_above="@+id/button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="location"
+        android:textSize="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        tools:layout_editor_absoluteX="292dp"
+        tools:layout_editor_absoluteY="16dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginTop="11dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>

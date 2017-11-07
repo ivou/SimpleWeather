@@ -41,8 +41,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     //https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22osijek%22)%20and%20u%3D'c'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys
     private String url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22osijek%22)%20and%20u%3D'c'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-    private String env="store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-    private String format="json";
     private String defCity= "Osijek";
 
     @BindView(R.id.linear)
@@ -93,22 +91,19 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.button)
     public void refresh() {
-        final ProgressDialog progressDoalog;
-        progressDoalog = new ProgressDialog(MainActivity.this);
-//        progressDoalog.setMax(100);
-        progressDoalog.setMessage("Please wait...");
-//        progressDoalog.setTitle("ProgressDialog bar example");
-        progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        // show it
-        progressDoalog.show();
-       url = getGrad();
+        final ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+        url = getUrlFromSettings();
         WeatherAPI.Factory.getInstance().getWeather(url).enqueue(new Callback<Weather>() {
                                                                   @Override
                                                                   public void onResponse(Call<Weather> call, Response<Weather> response) {
-                                                                      if(response.body().getQuery().getResults() != null){
-                                                                          progressDoalog.dismiss();
+                                                                      if(response.body() != null){
+                                                                          progressDialog.dismiss();
 //                                                                      Query query = response.body().getQuery();
-                                                                      String temperatura = response.body().getQuery().getResults().getChannel().getItem().getCondition().getTemp() + "ºC";
+                                                                      String temperatura = response.body().getQuery().getResults().getChannel().getItem().getCondition().getTemp() + "º"+ getSharedPreferences("Settings", Context.MODE_PRIVATE).getString("units", "").toUpperCase();
                                                                       tempView.setText(temperatura);
                                                                       cityView.setText(response.body().getQuery().getResults().getChannel().getTitle());
                                                                       lastupdateView.setText(response.body().getQuery().getResults().getChannel().getLastBuildDate());
@@ -117,8 +112,8 @@ public class MainActivity extends AppCompatActivity {
                                                                       weatherImgUpdate(weatherID);
                                                                   }
                                                                         else {
-                                                                          progressDoalog.dismiss();
-                                                                          Toast.makeText(MainActivity.this, "Please update location to a valid one!", Toast.LENGTH_SHORT).show();
+                                                                          progressDialog.dismiss();
+                                                                          Toast.makeText(MainActivity.this, "Please update location to a valid one! Rolling back to default location", Toast.LENGTH_SHORT).show();
                                                                       }
 
                                                                   }
@@ -255,11 +250,17 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
-    public String getGrad(){
+    public String getUrlFromSettings(){
         SharedPreferences sharedPrefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         String mCity= sharedPrefs.getString("neznam", "");
-        mCity = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22"+mCity+"%22)%20and%20u%3D'c'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-        return mCity;
+        String mUnit = sharedPrefs.getString("units", "");
+        String mUrl;
+        if (mCity != null){
+            mUrl = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22"+mCity+"%22)%20and%20u%3D'"+mUnit+"'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+        }
+        else
+            mUrl = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" + defCity + "%22)%20and%20u%3D'c'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+        return mUrl;
     }
 }
 

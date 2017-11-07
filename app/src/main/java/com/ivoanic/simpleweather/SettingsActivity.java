@@ -9,6 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -17,13 +20,23 @@ import butterknife.ButterKnife;
 public class SettingsActivity extends AppCompatActivity {
     @BindView(R.id.editTxtCity)
     EditText editTextView;
+    @BindView(R.id.radioGroupUnits)
+    RadioGroup radioGroupUnits;
+    @BindView(R.id.radioButtonC)
+    RadioButton radioButtonC;
+    @BindView(R.id.radioButtonF)
+    RadioButton radioButtonF;
+    @BindView(R.id.linearLayoutMain)
+    LinearLayout mainLinearLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
-        readSettings(editTextView);
+        readSettings(mainLinearLayout);
+
 
     }
 
@@ -56,16 +69,37 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void saveSettings (View view){
         String editText = editTextView.getText().toString();
+        int radioButtonUnit = radioGroupUnits.indexOfChild(findViewById(radioGroupUnits.getCheckedRadioButtonId()));
+        String units = "";
+        switch (radioButtonUnit){
+            case 0:
+                units="c";
+                break;
+            case 1:
+                units="f";
+                break;
+        }
+
         // Remove spaces from input text
         editText = editText.replaceAll("\\s+","");
         SharedPreferences sharedPrefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor mEditor = sharedPrefs.edit();
         mEditor.putString("neznam",editText);
+        mEditor.putString("units", units);
         mEditor.apply();
     }
     public void readSettings (View view){
         SharedPreferences sharedPrefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         String city = sharedPrefs.getString("neznam","");
+        String units = sharedPrefs.getString("units","");
+        int index;
+        if (units=="c"){
+            index = 0;
+        }
+        else{
+            index = 1;
+        }
+        ((RadioButton) ((RadioGroup)findViewById(R.id.radioGroupUnits)).getChildAt(index)).setChecked(true);
         editTextView.setText(city);
 
     }

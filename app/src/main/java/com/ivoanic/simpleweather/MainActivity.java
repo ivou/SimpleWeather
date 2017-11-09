@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -55,12 +56,19 @@ public class MainActivity extends AppCompatActivity {
     TextView condView;
     @BindView(R.id.lastupdated)
     TextView lastupdateView;
+    @BindView(R.id.swipeRefreshView)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mSwipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.swipeRefreshView);
+        mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
+
     }
 
     @Override
@@ -262,5 +270,14 @@ public class MainActivity extends AppCompatActivity {
             mUrl = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" + defCity + "%22)%20and%20u%3D'c'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
         return mUrl;
     }
+
+    protected SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            refresh();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    };
+
 }
 

@@ -89,15 +89,17 @@ public class SettingsActivity extends AppCompatActivity {
         mEditor.apply();
     }
     public void readSettings (View view){
+        int index=-1;
         SharedPreferences sharedPrefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         String city = sharedPrefs.getString("neznam","");
         String units = sharedPrefs.getString("units","");
-        int index;
-        if (units=="c"){
-            index = 0;
-        }
-        else{
-            index = 1;
+        switch (units){
+            case "c":
+                index = 0;
+                break;
+            case "f":
+                index = 1;
+                break;
         }
         ((RadioButton) ((RadioGroup)findViewById(R.id.radioGroupUnits)).getChildAt(index)).setChecked(true);
         editTextView.setText(city);
